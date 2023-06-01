@@ -13,13 +13,15 @@ return new class extends Migration
     {
         Schema::create('barang', function (Blueprint $table) {
             $table->id('id_barang');
-            $table->integer('lelang_id');
+            $table->foreignId('lelang_id')->references('id_lelang')->on('lelang')->onDelete('cascade')->onUpdate('cascade');
             $table->string('merk');
+            $table->string('jenis');
+            $table->string('warna');
             $table->string('bahan_bakar');
             $table->string('nomor_rangka');
-            $table->string('jenis');
             $table->string('tahun');
             $table->string('alamat');
+            $table->string('transmisi');
             $table->integer('kapasitas_mesin');
             $table->string('odometer');
             $table->string('nomor_mesin');

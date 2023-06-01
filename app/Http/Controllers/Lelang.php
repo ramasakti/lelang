@@ -39,7 +39,7 @@ class Lelang extends Controller
             return response()->json([
                 'success' => FALSE,
                 'message' => 'Gagal menambahkan jadwal perlelangan!',
-                'payload' => NULL
+                'payload' => $validator->errors()
             ]);
         }
 

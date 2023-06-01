@@ -19,7 +19,6 @@ return new class extends Migration
             $table->boolean('ktp');
             $table->boolean('form_a');
             $table->boolean('keur');
-            $table->string('warna');
             $table->date('masa_stnk');
             $table->boolean('faktur');
             $table->boolean('kwitansi_blanko');
