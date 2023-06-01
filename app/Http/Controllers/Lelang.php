@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use Validator;
 use DB;
 
@@ -15,7 +16,21 @@ class Lelang extends Controller
 
     public function store(Request $request)
     {
+        $slug = Str::slug($request->judul_lelang);
+        $existingSlug = DB::table('lelang')->where('slug', $slug)->exists();
+
+        if ($existingSlug) {
+            $counter = 1;
+            while ($existingSlug) {
+                $newSlug = $slug . '-' . $counter;
+                $existingSlug = DB::table('lelang')->where('slug', $newSlug)->exists();
+                $counter++;
+            }
+            $slug = $newSlug;
+        }
+
         $validator = Validator::make($request->all(), [
+            'judul_lelang' => 'required',
             'mulai_lelang' => 'required|date',
             'selesai_lelang' => 'required|date'
         ]);
@@ -30,6 +45,8 @@ class Lelang extends Controller
 
         DB::table('lelang')
             ->insert([
+                'judul_lelang' => $request->judul_lelang,
+                'slug' => $slug,
                 'mulai_lelang' => $request->mulai_lelang,
                 'selesai_lelang' => $request->selesai_lelang
             ]);
