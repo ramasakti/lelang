@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('lelang', function (Blueprint $table) {
             $table->id('id_lelang');
+            $table->string('judul_lelang');
             $table->date('mulai_lelang');
             $table->date('selesai_lelang');
         });
