@@ -10,7 +10,7 @@ class Barang extends Controller
     public function get()
     {
         return response()->json([
-            'status' => 200,
+            'status' => TRUE,
             'payload' => DB::table('barang')->get()
         ]);
     }
@@ -18,7 +18,7 @@ class Barang extends Controller
     public function store(Request $request)
     {
         return response()->json([
-            'status' => 201,
+            'status' => TRUE,
             'message' => 'Berhasil menginput data!',
             'payload' => $request
         ]);
@@ -27,7 +27,7 @@ class Barang extends Controller
     public function detail(Request $request, $id)
     {
         return response()->json([
-            'status' => 200,
+            'status' => TRUE,
             'payload' => DB::table('barang')->where('id_barang', $id)->first()
         ]);
     }
@@ -35,7 +35,7 @@ class Barang extends Controller
     public function update(Request $request)
     {
         return response()->json([
-            'status' => 201,
+            'status' => TRUE,
             'message' => 'Berhasil mengupdate data!',
             'payload' => $request
         ]);
@@ -45,7 +45,7 @@ class Barang extends Controller
     {
         DB::table('barang')->where('id_barang', $id)->delete();
         return response()->json([
-            'status' => 201,
+            'status' => TRUE,
             'message' => 'Berhasil delete data'
         ]);
     }
