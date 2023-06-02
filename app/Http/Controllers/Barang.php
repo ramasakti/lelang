@@ -8,6 +8,21 @@ use DB;
 
 class Barang extends Controller
 {
+    public function generateRandomCode() {
+        $characters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $randomCode = '';
+        
+        for ($i = 0; $i < 6; $i++) {
+            if ($i % 2 == 0) {
+                $randomCode .= rand(0, 9);
+            } else {
+                $randomCode .= $characters[rand(10, strlen($characters) - 1)];
+            }
+        }
+        
+        return $randomCode;
+    }
+
     public function get()
     {
         return response()->json([
@@ -19,6 +34,8 @@ class Barang extends Controller
 
     public function store(Request $request)
     {
+        $id_barang = $this->generateRandomCode();
+        
         $validatorBarang = Validator::make($request->all(), [
             'lelang_id' => 'required',
             'merk' => 'required',
@@ -45,7 +62,6 @@ class Barang extends Controller
         }
 
         $validatorDokumen = Validator::make($request->all(), [
-            'barang_id' => 'required',
             'nopol' => 'required|unique:dokumen_barang',
             'stnk' => 'required|boolean',
             'bpkb' => 'required',
@@ -67,8 +83,23 @@ class Barang extends Controller
             ]);
         }
 
+        $validatorGrade = Validator::make($request->all(), [
+            'mesin' => 'required|string:1',
+            'eksterior' => 'required|string:1',
+            'interior' => 'required|string:1',
+        ]);
+
+        if ($validatorGrade->fails()) {
+            return response()->json([
+                'status' => TRUE,
+                'message' => 'Gagal!',
+                'payload' => $validatorGrade->errors()
+            ]);
+        }
+
         DB::table('barang')
             ->insert([
+                'id_barang' => $id_barang,
                 'lelang_id' => $request->lelang_id,
                 'merk' => $request->merk,
                 'jenis' => $request->jenis,
@@ -83,6 +114,30 @@ class Barang extends Controller
                 'nomor_mesin' => $request->nomor_mesin,
                 'gambar' => $request->gambar,
                 'harga' => $request->harga,
+            ]);
+
+        DB::table('dokumen_barang')
+            ->insert([
+                'barang_id' => $id_barang,
+                'nopol' => $request->nopol,
+                'stnk' => $request->stnk,
+                'bpkb' => $request->bpkb,
+                'ktp' => $request->ktp,
+                'form_a' => $request->form_a,
+                'keur' => $request->keur,
+                'masa_stnk' => $request->masa_stnk,
+                'faktur' => $request->faktur,
+                'kwitansi_blanko' => $request->kwitansi_blanko,
+                'sph' => $request->sph,
+                'note' => $request->note,
+            ]);
+
+        DB::table('grade_barang')
+            ->insert([
+                'barang_id' => $id_barang,
+                'mesin' => $request->mesin,
+                'eksterior' => $request->eksterior,
+                'interior' => $request->interior
             ]);
 
         return response()->json([
@@ -100,6 +155,14 @@ class Barang extends Controller
                             ->join('grade_barang', 'grade_barang.barang_id', '=', 'barang.id_barang')
                             ->where('barang.id_barang', $id)
                             ->first();
+
+        if (!$detailBarang) {
+            return response()->json([
+                'status' => FALSE,
+                'message' => 'Gagal mendapatkan detail data barang! ID barang tidak ditemukan',
+                'payload' => NULL
+            ]);
+        }
 
         return response()->json([
             'status' => TRUE,

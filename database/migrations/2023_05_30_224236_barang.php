@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('barang', function (Blueprint $table) {
-            $table->id('id_barang');
+            $table->string('id_barang')->primary();
             $table->foreignId('lelang_id')->references('id_lelang')->on('lelang')->onDelete('cascade')->onUpdate('cascade');
             $table->string('merk');
             $table->string('jenis');

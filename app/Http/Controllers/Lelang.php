@@ -31,6 +31,7 @@ class Lelang extends Controller
 
         $validator = Validator::make($request->all(), [
             'judul_lelang' => 'required',
+            'kategori' => 'required',
             'mulai_lelang' => 'required|date',
             'selesai_lelang' => 'required|date'
         ]);
@@ -46,6 +47,7 @@ class Lelang extends Controller
         DB::table('lelang')
             ->insert([
                 'judul_lelang' => $request->judul_lelang,
+                'kategori' => $request->kategori,
                 'slug' => $slug,
                 'mulai_lelang' => $request->mulai_lelang,
                 'selesai_lelang' => $request->selesai_lelang
